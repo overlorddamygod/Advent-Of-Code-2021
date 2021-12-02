@@ -5,3 +5,4 @@ Advent of Code is an Advent calendar of small programming puzzles for a variety 
 | Day  | Part 1 | Part 2 |
 | ---- | ------ | ------ |
 | 1    |  ✅    | ✅      |
+| 2    |  ✅    | ✅      |
