@@ -15,7 +15,7 @@ const powerConsumption = (report) => {
 
     let gammaRate = [];
     let epsilonRate = [];
-
+    let count = 0;
     for ( let i = 0; i < bitLength; i++ ) {
         let zeroCount = 0;
         let oneCount = 0;
@@ -32,6 +32,7 @@ const powerConsumption = (report) => {
             epsilonRate.push("0");
         }
     }
+    console.log("SAD", count)
     gammaRate = parseInt(gammaRate.join(""), 2)
     epsilonRate = parseInt(epsilonRate.join(""), 2)
     return gammaRate * epsilonRate;
