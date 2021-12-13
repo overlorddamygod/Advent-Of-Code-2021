@@ -1,4 +1,4 @@
-const fs = require("fs")
+const fs = require("fs");
 
 fs.readFile('input.txt', 'utf8', function (err,data) {
     if (err) {
@@ -6,14 +6,13 @@ fs.readFile('input.txt', 'utf8', function (err,data) {
     }
     const input = data.split("\n");
     console.log(`Part 1: ${noOfDistinctPath1(input)}`);
-    console.log(`Part 2: ${noOfDistinctPath2(data.split("\n"))}`);
+    console.log(`Part 2: ${noOfDistinctPath2(input)}`);
 });
 
 // Part 1
 const noOfDistinctPath1 = ( input ) => {
   connections = getConnections(input);
   // console.log(connections);
-
   return traverse(connections, "start");
 }
 
@@ -52,9 +51,11 @@ const traverse = (connections, key, visited={}, depth =1, sum=0) => {
     }
     if ( !(node in visited) && node != "end" ) {
       sum = traverse(connections, node, visited, depth+1, sum);
-      delete visited[node];
     }
   })
+  if ( isSmallCave(key) ) {
+    delete visited[key];
+  }
   return sum;
 }
 
@@ -68,47 +69,38 @@ const isBigCave = (cave) => {
 // Part 2
 const noOfDistinctPath2 = ( input ) => {
   connections = getConnections(input);
-
-  // return traverse2(connections, "start");
+  // console.log(connections)
+  return traverse2(connections, "start");
 }
+// let paths = ['start']
 
 const traverse2 = (connections, key, visited={}, depth =1, sum=0) => {
   if ( isSmallCave(key) ) {
     if ( key in visited ) {
       visited[key] += 1;
     } else {
-      visited[key] = 0;
+      visited[key] = 1;
     }
   }
-  console.log(visited)
   connections[key].forEach((node)=> {
     // console.log(`1 Depth ${depth} ${key} turn ${node}`)
+    // paths.push(node)
     if (node == "end"){
-      // console.log("ENDED", node)
+      // console.log(paths.join(","))
       sum += 1;
-    }
-  
-    if ( (isBigCave(node) || ( !(node in visited) || visited[node] <= 1 ) )  && node != "end" ) {
-      // console.log(`2 Depth ${depth} ${key} turn ${node}`)
-
-      sum = traverse2(connections, node, visited, depth+1, sum);
-      if ( node in visited ) {
-        // if ( visited[node] == 1 || visited[node] == 2 ) {
-          visited[node] -= 1;
-          
-        // }
-        if ( visited[node] == 0) {
-          console.log(`LOL ${node} ${visited[node]}`)
-          console.log("SAD")
-          delete visited[node];
+    } else {
+      if ( isBigCave(node) || ( !(node in visited) || visited[node] <= 1 ) )  {
+        // console.log("traversing")
+        const isAnyCaveVIsistedTwice = Object.entries(visited).filter(a=>a[1] == 2).length > 0;
+        if ( !(isAnyCaveVIsistedTwice && visited[node] == 1) ) {
+          sum = traverse2(connections, node, visited, depth+1, sum);
         }
-        // if ( visited[node] == 2 ) {
-        //   visited[node] = 6;
-        //   // delete visited[node]
-        // }
       }
     }
+    // paths.pop()
   })
-  // console.log()
+  if ( isSmallCave(key) ) {
+    visited[key] -= 1;
+  }
   return sum;
 }
